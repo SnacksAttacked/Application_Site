@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Application Tracker</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+
+	</head>
+
+    <body>
+        <h1>Application Tracker</h1>
+        <button onclick="openPopup()">Create New Application</button>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Position</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="appTableBody">
+        </tbody>
+    </table>
+
+    <div id="popupForm" class="popup">
+        <h2>Create New Application</h2>
+        <label>Company: <input type="text" id="company"></label><br><br>
+        <label>Position: <input type="text" id="position"></label><br><br>
+        <label>Location: <input type="text" id="location"></label><br><br>
+        <label>Date Applied: <input type="text" id="date"></label><br><br>
+        <label>Status: <input type="text" id="status"></label><br><br>
+
+        <button onclick="addApplication()">Save</button>
+        <button onclick="closePopup()">Close</button>
+    </div>
+
+    <script>
+        function openPopup() {
+            document.getElementById('popupForm').classList.add('active');
+        }
+        function closePopup() {
+            document.getElementById('popupForm').classList.remove('active');
+        }
+
+        function addApplication() {
+            const company = document.getElementById('company').value;
+            const position = document.getElementById('position').value;
+            const status = document.getElementById('status').value;
+            const location = document.getElementById('location').value;
+            const date = document.getElementById('date').value;
+            
+            if (company && position && status && location && date) {
+                const tableBody = document.getElementById('appTableBody');
+                const row = tableBody.insertRow();
+                row.insertCell(0).innerText = company;
+                row.insertCell(1).innerText = position;
+                row.insertCell(2).innerText = location;
+                row.insertCell(3).innerText = date;
+                row.insertCell(4).innerText = status;
+                closePopup();
+                document.getElementById('company').value = '';
+                document.getElementById('position').value = '';
+                document.getElementById('location').value = '';
+                document.getElementById('date').value = '';
+                document.getElementById('status').value = '';
+            } else {
+                alert("Please fill out all fields.");
+            }
+        }
+    </script>
+
+    </body>
+</html>
