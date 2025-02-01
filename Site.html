@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>Example Site</h1>
+		<h2>Example of a heading</h2>
+		<img src="https://www.hdwallpapers.in/download/beautiful_sunrise_view_silhouette_background_blue_sky_reflection_on_ocean_4k_hd_nature-HD.jpg" alt="Lmao the image didn't load" width="104" height="142" title="Ooh! Sunrise!">
+		<p title="I can use this part as an addendum!" style="color:red;">There's more to this paragraph!</p>
+
+		<p>I guess we could work off of this, but I made this as sort of an icebreaker for HTML, so there's a bunch of redundant features and things that are missing.</p>
+		<pre>
+		system.out.println("Holy sheet! It's code!");
+		</pre>
+		<p style="font-family:Verdana;">Fancy font here!</p>
+		<p>Can I make things <strong>bold</strong> or <I>italic</i> within a paragraph?</p>
+		<p>What is the difference between <I>italic</I> and <em>emphasis?</em></p>
+		<p id="doot">Buttons were made to be pressed...</p>
+
+
+		<button type="button" id="btn4" style="display:none;" onclick="window.alert('You sure know how to press my buttons!');">Are you even listening?</button>
+
+		<button type="button" id="btn3" style="display:none;" onclick="document.getElementById('btn4').style.display='block'">Bruh, stop pressing the buttons!</button>
+
+		<button type="button" id="btn2" style="display:none;" onclick="document.getElementById('btn3').style.display='block'">Don't press this either</button>
+
+		<button type="button" id="btn1" onclick="document.getElementById('btn2').style.display='block'">Don't press this.</button>
+
+		<button type="button" id="btnP" onclick="increment()">Press this button instead</button>
+		
+		<script>
+			let x;
+			x = 0;
+			function increment()
+			{
+				x = x + 1;
+				document.getElementById('btnP').innerHTML = x;
+			}
+		</script>
+
+	</body>
+</html>
