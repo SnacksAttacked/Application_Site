@@ -1,76 +1,205 @@
 <!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Application Tracker</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .delete-btn {
+            background: grey;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .delete-btn.active {
+            background: red;
+            cursor: pointer;
+            opacity: 1;
+        }
+        .filters {
+            display: flex;
+            gap: 10px;
+        }
+        .filters button {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .formButton {
+            background-color: #555;
+            color: white;
+            padding: 16px 20px;
+            border: none;
+            cursor: pointer;
+            opacity: 0.8;
+            position: fixed;
+            bottom: 23px;
+            right: 28px;
+            width: 200px;
+            border-radius: 10px;
+        }
+        .form-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 2px solid #ccc;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
 
-<html>
-	<head>
-		<title>Application Tracker</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
+<body>
 
-	</head>
+    <h1>Application Tracker</h1>
 
-    <body>
-        <h1>Application Tracker</h1>
-        <button onclick="openPopup()">Create New Application</button>
-    
+    <div class="top-bar">
+        <button id="deleteBtn" class="delete-btn" disabled>Delete Selected</button>
+        <div class="filters">
+            <button onclick="sortTable(0)">Sort by Date</button>
+            <button onclick="sortTable(1)">Company (A-Z)</button>
+            <button onclick="sortTable(2)">Location (A-Z)</button>
+            <button onclick="sortTable(3)">Salary</button>
+            <button onclick="sortTable(4)">Status</button>
+        </div>
+    </div>
+
     <table>
         <thead>
             <tr>
+                <th>Select</th>
                 <th>Company</th>
                 <th>Position</th>
+                <th>Location</th>
+                <th>Date Applied</th>
                 <th>Status</th>
             </tr>
         </thead>
-        <tbody id="appTableBody">
-        </tbody>
+        <tbody id="appTableBody"></tbody>
     </table>
 
-    <div id="popupForm" class="popup">
+    <button class="formButton" onclick="openForm()">New Application</button>
+
+    <div id="popupForm" class="form-popup">
         <h2>Create New Application</h2>
         <label>Company: <input type="text" id="company"></label><br><br>
         <label>Position: <input type="text" id="position"></label><br><br>
         <label>Location: <input type="text" id="location"></label><br><br>
-        <label>Date Applied: <input type="text" id="date"></label><br><br>
+        <label>Date Applied: <input type="date" id="date"></label><br><br>
         <label>Status: <input type="text" id="status"></label><br><br>
-
         <button onclick="addApplication()">Save</button>
-        <button onclick="closePopup()">Close</button>
+        <button onclick="closeForm()">Close</button>
     </div>
 
     <script>
-        function openPopup() {
-            document.getElementById('popupForm').classList.add('active');
+        function openForm() {
+            document.getElementById('popupForm').style.display = "block";
         }
-        function closePopup() {
-            document.getElementById('popupForm').classList.remove('active');
+
+        function closeForm() {
+            document.getElementById('popupForm').style.display = "none";
         }
 
         function addApplication() {
             const company = document.getElementById('company').value;
             const position = document.getElementById('position').value;
-            const status = document.getElementById('status').value;
             const location = document.getElementById('location').value;
             const date = document.getElementById('date').value;
-            
-            if (company && position && status && location && date) {
+            const status = document.getElementById('status').value;
+
+            if (company && position && location && date && status) {
                 const tableBody = document.getElementById('appTableBody');
                 const row = tableBody.insertRow();
-                row.insertCell(0).innerText = company;
-                row.insertCell(1).innerText = position;
-                row.insertCell(2).innerText = location;
-                row.insertCell(3).innerText = date;
-                row.insertCell(4).innerText = status;
-                closePopup();
-                document.getElementById('company').value = '';
-                document.getElementById('position').value = '';
-                document.getElementById('location').value = '';
-                document.getElementById('date').value = '';
-                document.getElementById('status').value = '';
+                row.insertCell(0).innerHTML = `<input type="checkbox" class="row-checkbox" onclick="updateDeleteButton()">`;
+                row.insertCell(1).innerText = company;
+                row.insertCell(2).innerText = position;
+                row.insertCell(3).innerText = location;
+                row.insertCell(4).innerText = date;
+                row.insertCell(5).innerText = status;
+
+                closeForm();
+                clearForm();
             } else {
                 alert("Please fill out all fields.");
             }
         }
+
+        function clearForm() {
+            document.getElementById('company').value = '';
+            document.getElementById('position').value = '';
+            document.getElementById('location').value = '';
+            document.getElementById('date').value = '';
+            document.getElementById('status').value = '';
+        }
+
+        function updateDeleteButton() {
+            const checkboxes = document.querySelectorAll(".row-checkbox:checked");
+            const deleteBtn = document.getElementById("deleteBtn");
+
+            if (checkboxes.length > 0) {
+                deleteBtn.classList.add("active");
+                deleteBtn.disabled = false;
+            } else {
+                deleteBtn.classList.remove("active");
+                deleteBtn.disabled = true;
+            }
+        }
+
+        document.getElementById("deleteBtn").addEventListener("click", function() {
+            const checkboxes = document.querySelectorAll(".row-checkbox:checked");
+            checkboxes.forEach(checkbox => {
+                checkbox.closest("tr").remove();
+            });
+            updateDeleteButton();
+        });
+
+        function sortTable(columnIndex) {
+            const table = document.querySelector("table tbody");
+            const rows = Array.from(table.rows);
+
+            rows.sort((rowA, rowB) => {
+                let cellA = rowA.cells[columnIndex].innerText.trim();
+                let cellB = rowB.cells[columnIndex].innerText.trim();
+
+                if (!isNaN(cellA) && !isNaN(cellB)) {
+                    return Number(cellA) - Number(cellB);
+                } else {
+                    return cellA.localeCompare(cellB);
+                }
+            });
+
+            table.innerHTML = "";
+            rows.forEach(row => table.appendChild(row));
+        }
     </script>
 
-    </body>
+</body>
 </html>
