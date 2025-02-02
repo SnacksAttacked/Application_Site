@@ -143,6 +143,16 @@
                 row.insertCell(3).innerText = location;
                 row.insertCell(4).innerText = date;
                 row.insertCell(5).innerText = status;
+		try {
+    		// Add form data to Firestore
+    		addDoc(collection(db, "formSubmissions"), {
+      		name: 'Aye',
+      		timestamp: new Date()
+    		});
+    		alert("Form submitted successfully!");
+  		} catch (error) {
+    		console.error("Error adding document: ", error);
+  		}
 
                 closeForm();
                 clearForm();
